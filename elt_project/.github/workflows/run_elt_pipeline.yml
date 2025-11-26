@@ -1,0 +1,32 @@
+name: Run ELT Pipeline
+
+on:
+  schedule:
+    # Runs 'at 00:00 on every day-of-week from Monday through Friday'
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install duckdb dbt-core dbt-duckdb
+      
+      - name: Run data loading script
+        run: python elt_project/scripts/load_data.py
+
+      - name: Run dbt models
+        run: |
+          dbt run --profiles-dir elt_project --project-dir elt_project/dbt_project
