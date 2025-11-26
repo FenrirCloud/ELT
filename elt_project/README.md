@@ -1,88 +1,50 @@
-# ELT Project with Python, DuckDB, dbt, and Streamlit
+# Olist E-Commerce ELT Pipeline
 
-This project is a complete, step-by-step tutorial for building a modern, open-source ELT (Extract, Load, Transform) pipeline. It uses the Olist Brazilian E-Commerce dataset to demonstrate how to ingest, model, and visualize data.
+This project demonstrates a simple, open-source ELT pipeline using the Olist Brazilian E-Commerce dataset.
 
-## 🚀 Technology Stack
+### Tech Stack
+*   **Extract & Load**: Python & DuckDB
+*   **Transform**: dbt Core
+*   **Orchestration**: GitHub Actions
+*   **Dashboard**: Streamlit
 
-- **Python**: For scripting the data loading process.
-- **DuckDB**: As the analytical database. It's fast, serverless, and integrates well with Python.
-- **dbt Core**: For transforming data using SQL-based models.
-- **GitHub Actions**: For orchestrating the pipeline and running it on a schedule.
-- **Streamlit**: For building a simple and interactive data dashboard.
+---
 
-## 📂 Project Structure
+### How to Run
 
-```
-elt_project/
-│
-├── .github/
-│   └── workflows/
-│       └── run_elt_pipeline.yml  -- GitHub Actions workflow
-│
-├── data/
-│   └── ecommerce.duckdb          -- DuckDB database file
-│   └── *.csv                     -- Raw data files (after download)
-│
-├── dbt_project/
-│   ├── models/
-│   │   ├── staging/              -- Staging models for cleaning data
-│   │   │   ├── stg_customers.sql
-│   │   │   ├── stg_order_items.sql
-│   │   │   └── stg_orders.sql
-│   │   └── facts/                -- Fact models for business logic
-│   │       └── fct_orders.sql
-│   ├── dbt_project.yml           -- dbt project configuration
-│   └── ...
-│
-├── scripts/
-│   ├── load_data.py              -- Python script to load CSVs into DuckDB
-│   └── inspect_db.py             -- Helper script to inspect database schema
-│
-├── streamlit_app/
-│   └── app.py                    -- Streamlit dashboard application
-│
-├── profiles.yml                  -- dbt profile configuration
-└── README.md                     -- This file
-```
+**1. Prerequisites:**
+*   Python 3.9+
 
-## ⚙️ How to Run
+**2. Setup:**
 
-### 1. Prerequisites
-
-- Python 3.9+
-- Pip (Python package installer)
-
-### 2. Installation
-
-Clone the repository and install the required Python packages:
-
+Clone the repo and install dependencies.
 ```bash
-git clone <your-repo-url>
-cd elt_project
-pip install -r requirements.txt 
+git clone https://github.com/FenrirCloud/ELT.git
+cd ELT
+pip install -r requirements.txt
 ```
-*(Note: You will need to create a `requirements.txt` file. You can generate one with `pip freeze > requirements.txt` after installing the packages manually as we did in the tutorial)*
 
-### 3. Run the ELT Pipeline Manually
+**3. Run Pipeline:**
 
-1.  **Load Data**: Run the Python script to download the dataset and load it into DuckDB.
-    ```bash
-    python scripts/load_data.py
-    ```
-
-2.  **Transform Data**: Run the dbt models to transform the raw data into analytical tables.
-    ```bash
-    dbt run --project-dir dbt_project --profiles-dir .
-    ```
-
-### 4. Run the Streamlit Dashboard
-
-To view the dashboard, run the Streamlit application:
-
+First, load the raw data into DuckDB.
 ```bash
-streamlit run streamlit_app/app.py
+python elt_project/scripts/load_data.py
 ```
 
-## 🤖 Automation with GitHub Actions
+Next, run the dbt transformations.
+```bash
+dbt run --project-dir elt_project/dbt_project --profiles-dir elt_project
+```
 
-The pipeline is configured to run automatically every day from Monday to Friday at midnight UTC. This is defined in the `.github/workflows/run_elt_pipeline.yml` file. You can also trigger it manually from the "Actions" tab in your GitHub repository.
+**4. View Dashboard:**
+
+Launch the Streamlit app to see the results.
+```bash
+streamlit run elt_project/streamlit_app/app.py
+```
+
+---
+
+### Automation
+
+A GitHub Actions workflow is included in `.github/workflows` to run the pipeline on a schedule (Mon-Fri at midnight UTC) or manually.
